@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public enum Button
+public enum Buttons
 {
-    BRAKE = 0x01,
-    HANDBRAKE = 0x02,
-    USE = 0x04,
-    SWAP = 0x08,
-    DROP = 0x10,
-    PAUSE = 0x20,
-    HONK = 0x40
+    GAS = 0x01,
+    BRAKE = 0x02,
+    HANDBRAKE = 0x04,
+    USE = 0x08,
+    SWAP = 0x10,
+    DROP = 0x20,
+    PAUSE = 0x40,
+    HONK = 0x80
 }
 
 public class InputManager : MonoBehaviour
@@ -54,6 +56,7 @@ public class InputManager : MonoBehaviour
         buffer[0] = new InputFrame();
     }
 
+    // -1 = Left, +1 = Right
     float GetSteering()
     {
         return buffer[0].GetSteering();
@@ -82,24 +85,33 @@ public class InputManager : MonoBehaviour
     class InputFrame
     {
         float steering;
-        byte buttons;
+        int buttons;
 
         public InputFrame()
         {
             steering = Input.GetAxisRaw("Steer");
+            //Debug.Log(steering);
 
             buttons = 0x00;
-            // TODO fix cast error on these
-            buttons |= ToByte(Input.GetButton("Brake"));
-            buttons |= ToByte(Input.GetButton("Handbrake")) << 1;
-            buttons |= ToByte(Input.GetButton("Use")) << 2;
-            buttons |= ToByte(Input.GetButton("Swap")) << 3;
-            buttons |= ToByte(Input.GetButton("Drop")) << 4;
-            buttons |= ToByte(Input.GetButton("Pause")) << 5;
-            buttons |= ToByte(Input.GetButton("Honk")) << 6;
+            buttons = buttons | ToInt(Input.GetButton("Accel"));
+            buttons = buttons | ToInt(Input.GetButton("Brake")) << 1;
+            buttons = buttons | ToInt(Input.GetButton("Handbrake")) << 2;
+            buttons = buttons | ToInt(Input.GetButton("Use")) << 3;
+            buttons = buttons | ToInt(Input.GetButton("Swap")) << 4;
+            buttons = buttons | ToInt(Input.GetButton("Drop")) << 5;
+            buttons = buttons | ToInt(Input.GetButton("Pause")) << 6;
+            buttons = buttons | ToInt(Input.GetButton("Honk")) << 7;
+
+            //string mask = Convert.ToString(buttons, 2);
+            //string pad = "";
+            //for (int i = 8 - mask.Length; i > 0; i--)
+            //{
+            //    pad += "0";
+            //}
+            //Debug.Log(pad + mask);
         }
 
-        byte ToByte(bool b)
+        int ToInt(bool b)
         {
             return b ? 0x01 : 0x00;
         }
@@ -109,7 +121,7 @@ public class InputManager : MonoBehaviour
             return steering;
         }
 
-        public bool GetButton(byte mask)
+        public bool GetButton(int mask)
         {
             return (mask & buttons) != 0;
         }
