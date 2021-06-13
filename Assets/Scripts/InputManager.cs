@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GMTKMMXXI;
+//using System;
 
 namespace GMTKMMXXI
 {
@@ -121,13 +122,13 @@ public class InputManager : MonoBehaviour
             buttons = buttons | ToInt(Input.GetButton("Pause")) << 6;
             buttons = buttons | ToInt(Input.GetButton("Honk")) << 7;
 
-            //string mask = Convert.ToString(buttons, 2);
-            //string pad = "";
-            //for (int i = 8 - mask.Length; i > 0; i--)
-            //{
-            //    pad += "0";
-            //}
-            //Debug.Log(pad + mask);
+            /*string mask = Convert.ToString(buttons, 2);
+            string pad = "";
+            for (int i = 8 - mask.Length; i > 0; i--)
+            {
+                pad += "0";
+            }
+            Debug.Log(pad + mask);*/
         }
 
         int ToInt(bool b)

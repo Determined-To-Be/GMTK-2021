@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] float torque;
     [SerializeField] float accel;
+    [SerializeField] float reverseAccel;
 
     Rigidbody rb;
 
@@ -18,6 +19,6 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         rb.AddTorque(transform.up * torque * InputManager.Instance.GetSteering());
-        rb.AddForce(transform.up * accel * (InputManager.Instance.GetButton(Buttons.GAS) ? 1 : 0));
+        rb.AddForce(transform.forward * (InputManager.Instance.GetButton(Buttons.BRAKE) ? -reverseAccel : accel * (InputManager.Instance.GetButton(Buttons.GAS) ? 1 : 0)));
     }
 }
