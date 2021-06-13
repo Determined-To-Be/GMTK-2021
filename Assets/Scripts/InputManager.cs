@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
+using GMTKMMXXI;
 
-public enum Buttons
+namespace GMTKMMXXI
 {
-    GAS = 0x01,
-    BRAKE = 0x02,
-    HANDBRAKE = 0x04,
-    USE = 0x08,
-    SWAP = 0x10,
-    DROP = 0x20,
-    PAUSE = 0x40,
-    HONK = 0x80
+    // Still has to be cast to int for it to work
+    public enum Buttons
+    {
+        GAS = 0x01,
+        BRAKE = 0x02,
+        HANDBRAKE = 0x04,
+        USE = 0x08,
+        SWAP = 0x10,
+        DROP = 0x20,
+        PAUSE = 0x40,
+        HONK = 0x80
+    }
 }
 
 public class InputManager : MonoBehaviour
@@ -57,29 +61,44 @@ public class InputManager : MonoBehaviour
     }
 
     // -1 = Left, +1 = Right
-    float GetSteering()
+    public float GetSteering()
     {
         return buffer[0].GetSteering();
     }
 
-    float GetSteeringDelta()
+    public float GetSteeringDelta()
     {
         return buffer[1].GetSteering() - buffer[0].GetSteering();
     }
 
-    bool GetButton(byte mask)
+    public bool GetButton(int mask)
     {
         return buffer[0].GetButton(mask);
     }
 
-    bool GetButtonDown(byte mask)
+    public bool GetButtonDown(int mask)
     {
         return buffer[0].GetButton(mask) && !buffer[1].GetButton(mask);
     }
 
-    bool GetButtonUp(byte mask)
+    public bool GetButtonUp(int mask)
     {
         return !buffer[0].GetButton(mask) && buffer[1].GetButton(mask);
+    }
+
+    public bool GetButton(Buttons mask)
+    {
+        return GetButton((int)mask);
+    }
+
+    public bool GetButtonDown(Buttons mask)
+    {
+        return GetButtonDown((int)mask);
+    }
+
+    public bool GetButtonUp(Buttons mask)
+    {
+        return GetButtonUp((int)mask);
     }
 
     class InputFrame
