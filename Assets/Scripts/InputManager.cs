@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GMTKMMXXI;
-//using System;
 
 namespace GMTKMMXXI
 {
-    // Still has to be cast to int for it to work
     public enum Buttons
     {
         GAS = 0x01,
@@ -15,8 +13,8 @@ namespace GMTKMMXXI
         USE = 0x08,
         SWAP = 0x10,
         DROP = 0x20,
-        PAUSE = 0x40,
-        HONK = 0x80
+        SUBMIT = 0x40,
+        CANCEL = 0x80
     }
 }
 
@@ -61,7 +59,6 @@ public class InputManager : MonoBehaviour
         buffer[0] = new InputFrame();
     }
 
-    // -1 = Left, +1 = Right
     public float GetSteering()
     {
         return buffer[0].GetSteering();
@@ -109,26 +106,17 @@ public class InputManager : MonoBehaviour
 
         public InputFrame()
         {
-            steering = Input.GetAxisRaw("Steer");
-            //Debug.Log(steering);
+            steering = Input.GetAxisRaw("Horizontal");
 
             buttons = 0x00;
-            buttons = buttons | ToInt(Input.GetButton("Accel"));
+            buttons = buttons | ToInt(Input.GetButton("Vertical"));
             buttons = buttons | ToInt(Input.GetButton("Brake")) << 1;
             buttons = buttons | ToInt(Input.GetButton("Handbrake")) << 2;
             buttons = buttons | ToInt(Input.GetButton("Use")) << 3;
             buttons = buttons | ToInt(Input.GetButton("Swap")) << 4;
             buttons = buttons | ToInt(Input.GetButton("Drop")) << 5;
-            buttons = buttons | ToInt(Input.GetButton("Pause")) << 6;
-            buttons = buttons | ToInt(Input.GetButton("Honk")) << 7;
-
-            /*string mask = Convert.ToString(buttons, 2);
-            string pad = "";
-            for (int i = 8 - mask.Length; i > 0; i--)
-            {
-                pad += "0";
-            }
-            Debug.Log(pad + mask);*/
+            buttons = buttons | ToInt(Input.GetButton("Submit")) << 6;
+            buttons = buttons | ToInt(Input.GetButton("Cancel")) << 7;
         }
 
         int ToInt(bool b)
