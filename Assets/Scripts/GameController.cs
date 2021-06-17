@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GMTKMMXXI;
-using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
-{ 
-    public Queue<Card> deck;
+{
+    [SerializeField] int cooldown;
 
     CardPickup[] inPlay;
-    Text inPlayUI;
+    Queue<Card> deck;
 
     // Singleton pattern
     static GameController _Instance;
@@ -40,11 +39,13 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+
+        deck = new Queue<Card>();
+        inPlay = GetComponentsInChildren<CardPickup>();
     }
 
     void Start()
     {
-        deck = new Queue<Card>();
         for (Faces f = Faces.DEUCE; f <= Faces.ACE; f++)
         {
             for (Suits s = Suits.DIAMONDS; s <= Suits.SPADES; s++)
@@ -53,42 +54,33 @@ public class GameController : MonoBehaviour
             }
         }
 
-        inPlay = GetComponentsInChildren<CardPickup>();
         foreach (CardPickup cp in inPlay)
         {
-            cp.Deal();
+            cp.Deal(deck.Dequeue());
         }
 
-        inPlayUI = GameObject.Find("In Play").GetComponent<Text>();
+        Shuffle();
     }
 
-    void Update()
+    IEnumerator Shuffle()
     {
-        if (deck.Count > 0)
+        while (true)
         {
+            yield return new WaitForSeconds(cooldown);
+
             foreach (CardPickup cp in inPlay)
             {
+                if (deck.Count == 0)
+                {
+                    break;
+                }
+
                 if (cp.card == null)
                 {
-                    cp.Deal();
-                    break;
+                    cp.Deal(deck.Dequeue());
                 }
             }
         }
-
-        inPlayUI.text = "";
-        foreach (CardPickup cp in inPlay)
-        {
-            if (cp.card != null)
-            {
-                inPlayUI.text += cp.card.face.ToString() + " | " + cp.card.suit.ToString() + "\n";
-            }
-        }
-    }
-
-    public Card Deal()
-    {
-        return deck.Dequeue();
     }
 
     public void Discard(Card c)

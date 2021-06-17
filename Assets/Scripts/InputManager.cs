@@ -51,6 +51,9 @@ public class InputManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+
+        buffer[0] = new InputFrame(true);
+        buffer[1] = new InputFrame(true);
     }
 
     void Update()
@@ -109,14 +112,23 @@ public class InputManager : MonoBehaviour
             steering = Input.GetAxisRaw("Horizontal");
 
             buttons = 0x00;
-            buttons = buttons | ToInt(Input.GetButton("Vertical"));
-            buttons = buttons | ToInt(Input.GetButton("Brake")) << 1;
-            buttons = buttons | ToInt(Input.GetButton("Handbrake")) << 2;
-            buttons = buttons | ToInt(Input.GetButton("Use")) << 3;
-            buttons = buttons | ToInt(Input.GetButton("Swap")) << 4;
-            buttons = buttons | ToInt(Input.GetButton("Drop")) << 5;
-            buttons = buttons | ToInt(Input.GetButton("Submit")) << 6;
-            buttons = buttons | ToInt(Input.GetButton("Cancel")) << 7;
+            buttons |= ToInt(Input.GetButton("Vertical"));
+            buttons |= ToInt(Input.GetButton("Brake")) << 1;
+            buttons |= ToInt(Input.GetButton("Handbrake")) << 2;
+            buttons |= ToInt(Input.GetButton("Use")) << 3;
+            buttons |= ToInt(Input.GetButton("Swap")) << 4;
+            buttons |= ToInt(Input.GetButton("Drop")) << 5;
+            buttons |= ToInt(Input.GetButton("Submit")) << 6;
+            buttons |= ToInt(Input.GetButton("Cancel")) << 7;
+        }
+
+        public InputFrame(bool isInitialFrame)
+        {
+            if (isInitialFrame)
+            {
+                buttons = 0x00;
+                steering = 0;
+            }
         }
 
         int ToInt(bool b)

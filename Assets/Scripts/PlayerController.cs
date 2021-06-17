@@ -14,11 +14,11 @@ public class PlayerController : MonoBehaviour
     Text handUI;
     Stack<Card> hand;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        hand = new Stack<Card>();
         handUI = GameObject.Find("Hand").GetComponent<Text>();
+        hand = new Stack<Card>();
     }
 
     void FixedUpdate()
@@ -29,10 +29,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (InputManager.Instance.GetButtonDown(Buttons.DROP))
+        if (InputManager.Instance.GetButtonDown(Buttons.DROP) && hand.Count > 0)
         {
             GameController.Instance.Discard(hand.Pop());
-            //UpdateHandUI();
         }
 
         UpdateHandUI();
@@ -41,39 +40,23 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         CardPickup cp = collision.gameObject.GetComponent<CardPickup>();
-        Debug.Log(cp);
         if (cp != null)
         {
             if (hand.Count < 2)
             {
-                hand.Push(cp.card);
-                cp.card = null;
-                cp.gameObject.SetActive(false);
-                //UpdateHandUI();
+                hand.Push(cp.Draw());
             }
         }
     }
 
     void UpdateHandUI() {
         handUI.text = "";
-
-        /*
-        if (hand.Count == 0)
+        if (hand.Count > 0)
         {
-            handUI.text = "[EMPTY]";
-            return;
-        }
-        */
-
-        foreach (Card c in hand)
-        {
-            handUI.text += c.face.ToString() + " | " + c.suit.ToString() + "\n";
-        }
-
-        handUI.text += "\n";
-        foreach(Card c in GameController.Instance.deck)
-        {
-            handUI.text += c.face.ToString() + " | " + c.suit.ToString() + "\n";
+            foreach (Card c in hand)
+            {
+                handUI.text += c.face.ToString() + " | " + c.suit.ToString() + "\n";
+            }
         }
     }
 }

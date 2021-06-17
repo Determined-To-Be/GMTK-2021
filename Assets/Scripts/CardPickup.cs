@@ -38,12 +38,14 @@ public class CardPickup : MonoBehaviour
     [SerializeField] float bounceSpeed;
     [SerializeField] float bounceHeight;
 
+    MeshRenderer mr;
     Vector3 initPos;
     Vector3 goalPos;
     bool isDirectionUp;
 
-    void Start()
+    void Awake()
     {
+        mr = GetComponent<MeshRenderer>();
         initPos = transform.position;
         goalPos = transform.position + (Vector3.up * bounceHeight);
         isDirectionUp = true;
@@ -56,10 +58,23 @@ public class CardPickup : MonoBehaviour
         isDirectionUp = transform.position.y > goalPos.y ? false : (transform.position.y < initPos.y ? true : isDirectionUp);
     }
 
-    public void Deal()
+    public void Deal(Card c)
     {
-        gameObject.SetActive(true);
-        card = GameController.Instance.Deal();
+        mr.enabled = true;
+        card = c;
+    }
+
+    public Card Draw()
+    {
+        Card drawn = card;
+        card = null;
+        mr.enabled = false;
+        return drawn;
+    }
+
+    public bool IsOn()
+    {
+        return mr.enabled;
     }
 }
 
